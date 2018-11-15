@@ -36,6 +36,12 @@ public class UserRoute extends RouteBuilder {
                 .process(this::getUserById)
                 .validate(this::isUserPresent)
                 .end();
+
+        from("direct:getUserByLoginAndPassword")
+                .routeId("getUserByLoginAndPassword")
+                .process(this::getUserByLogin)
+                .validate(this::isUserPresent)
+                .end();
     }
 
     private void initializeCharacterList(Exchange exchange) {
@@ -63,6 +69,12 @@ public class UserRoute extends RouteBuilder {
     private void getUserById(Exchange exchange) {
         String id = exchange.getIn().getBody(String.class);
         UserEntity userEntity = userRepository.findById(id);
+        exchange.getIn().setBody(userEntity, UserEntity.class);
+    }
+
+    private void getUserByLogin(Exchange exchange) {
+        String login = exchange.getIn().getBody(String.class);
+        UserEntity userEntity = userRepository.findByLogin(login);
         exchange.getIn().setBody(userEntity, UserEntity.class);
     }
 
