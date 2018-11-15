@@ -28,6 +28,6 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public SimpleError handlePredicateValidationException(PredicateValidationException e) {
-    return new SimpleError("User inexistent");
+        return new SimpleError("User inexistent");
     }
 }
