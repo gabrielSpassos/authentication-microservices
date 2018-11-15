@@ -1,12 +1,12 @@
-package br.com.gabrielspassos.characterservice;
+package br.com.gabrielspassos.characters;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CharacterServiceApplication {
+public class CharacterApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CharacterServiceApplication.class, args);
+		SpringApplication.run(CharacterApplication.class, args);
 	}
 }
