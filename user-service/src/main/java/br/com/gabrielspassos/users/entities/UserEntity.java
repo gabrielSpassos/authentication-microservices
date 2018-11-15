@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "users")
 public class UserEntity {
 
@@ -14,6 +16,7 @@ public class UserEntity {
     private String login;
     private String password;
     private String accountType;
+    private List characters;
 
     public String getId() {
         return id;
@@ -53,6 +56,14 @@ public class UserEntity {
 
     public void setAccountType(String accountType) {
         this.accountType = accountType;
+    }
+
+    public List getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(List characters) {
+        this.characters = characters;
     }
 
     @Override

@@ -2,6 +2,7 @@ package br.com.gabrielspassos.users.routes;
 
 import br.com.gabrielspassos.users.entities.UserEntity;
 import br.com.gabrielspassos.users.repositories.UserRepository;
+import com.google.common.collect.Lists;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class UserRoute extends RouteBuilder {
     public void configure() throws Exception {
         from("direct:createUser")
                 .routeId("createUser")
+                .process(this::initializeCharacterList)
                 .process(this::saveUser)
                 .end();
 
@@ -28,6 +30,18 @@ public class UserRoute extends RouteBuilder {
                 .validate(this::isValidUser)
                 .process(this::saveUser)
                 .end();
+
+        from("direct:getUserById")
+                .routeId("getUserById")
+                .process(this::getUserById)
+                .validate(this::isUserPresent)
+                .end();
+    }
+
+    private void initializeCharacterList(Exchange exchange) {
+        UserEntity userEntity = exchange.getIn().getBody(UserEntity.class);
+        userEntity.setCharacters(Lists.newArrayList());
+        exchange.getIn().setBody(userEntity, UserEntity.class);
     }
 
     private void saveUser(Exchange exchange) {
@@ -44,5 +58,16 @@ public class UserRoute extends RouteBuilder {
     private Boolean isValidUser(Exchange exchange) {
         UserEntity oldUser = exchange.getProperty("oldUser", UserEntity.class);
         return Objects.nonNull(oldUser);
+    }
+
+    private void getUserById(Exchange exchange) {
+        String id = exchange.getIn().getBody(String.class);
+        UserEntity userEntity = userRepository.findById(id);
+        exchange.getIn().setBody(userEntity, UserEntity.class);
+    }
+
+    private Boolean isUserPresent(Exchange exchange) {
+        UserEntity userEntity = exchange.getIn().getBody(UserEntity.class);
+        return Objects.nonNull(userEntity);
     }
 }

@@ -3,6 +3,8 @@ package br.com.gabrielspassos.users.controllers.dto;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.List;
+
 public class ResponseUserDTO {
 
     private String id;
@@ -10,6 +12,7 @@ public class ResponseUserDTO {
     private String login;
     private String password;
     private String accountType;
+    private List characters;
 
     public String getId() {
         return id;
@@ -49,6 +52,14 @@ public class ResponseUserDTO {
 
     public void setAccountType(String accountType) {
         this.accountType = accountType;
+    }
+
+    public List getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(List characters) {
+        this.characters = characters;
     }
 
     @Override

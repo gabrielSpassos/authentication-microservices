@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.util.stream.Stream;
 
 @RestController
-public class UserApi implements BaseVersion {
+public class UserController implements BaseVersion {
 
     @Autowired
     private ModelMapper modelMapper;
@@ -40,6 +40,20 @@ public class UserApi implements BaseVersion {
             return Stream.of(userDTO)
                     .map(user -> convertToEntity(user, id))
                     .map(entity -> producerTemplate.requestBody("direct:updateUser", entity))
+                    .map(response -> convertToResponseUserDTO((UserEntity) response))
+                    .map(ResponseEntity::ok)
+                    .findFirst()
+                    .get();
+        } catch (CamelExecutionException e) {
+            throw ExceptionUtils.getRootCause(e);
+        }
+    }
+
+    @GetMapping(value = "/users/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable String id) throws Throwable {
+        try {
+            return Stream.of(id)
+                    .map(userId -> producerTemplate.requestBody("direct:getUserById", userId))
                     .map(response -> convertToResponseUserDTO((UserEntity) response))
                     .map(ResponseEntity::ok)
                     .findFirst()
