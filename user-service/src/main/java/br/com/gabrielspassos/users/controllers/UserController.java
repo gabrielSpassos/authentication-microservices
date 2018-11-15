@@ -80,14 +80,7 @@ public class UserController implements BaseVersion {
             throw ExceptionUtils.getRootCause(e);
         }
     }
-
-    private Map<String, Object> createHeaders(String login, String password) {
-        Map<String, Object> routeHeaders = new HashMap<>();
-        routeHeaders.put("login", login);
-        routeHeaders.put("password", password);
-        return routeHeaders;
-    }
-
+    
     private UserEntity convertToEntity(UserDTO userDTO, String id) {
         UserEntity userEntity = convertToEntity(userDTO);
         userEntity.setId(id);
