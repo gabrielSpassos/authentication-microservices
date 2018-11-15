@@ -19,8 +19,12 @@ public class UserClient {
     private ModelMapper modelMapper;
 
     public UserDTO getUserById(String id) {
-        ResponseEntity response = restTemplate.getForEntity(buildUrl(id), UserDTO.class);
-        return convertToUserEntity(response.getBody());
+        try {
+            ResponseEntity response = restTemplate.getForEntity(buildUrl(id), UserDTO.class);
+            return convertToUserEntity(response.getBody());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Not found user with this id");
+        }
     }
 
     private String buildUrl(String id) {
