@@ -3,11 +3,11 @@ const jwt = require('jsonwebtoken');
 
 module.exports = function (app) {
 
-    this.getUserTokenById = (login) => {
+    this.getUserTokenById = (login, password) => {
         const deferred = q.defer();
         const userClient = app.client.userClient;
 
-        userClient.getUserByLogin(login)
+        userClient.getUserByLoginAndPassword(login, password)
             .then((user) => {
                 let id = user.id;
                 let token = jwt.sign({id}, process.env.SECRET, {

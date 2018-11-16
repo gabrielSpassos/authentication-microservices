@@ -31,6 +31,19 @@ services:
     networks:
       game-poc:
         ipv4_address: 10.5.0.4  
+  middle-service:
+    container_name: middle-service
+    depends_on: 
+      - mongo
+      - user-service
+      - character-service
+    build:
+      context: ./middle-service/
+    ports:
+      - "8080:8080"
+    networks:
+      game-poc:
+        ipv4_address: 10.5.0.5
 
 networks:
   game-poc:

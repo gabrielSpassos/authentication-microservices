@@ -2,9 +2,15 @@ module.exports = function (app) {
 
     app.get('/login/:login', (req, res) => {
         let login = req.params.login;
+        let password = req.headers['password'];
+
+        if(!password){
+            return res.status(401).send({auth: false, message: "Não foi informado password"});
+        }
+
         const userService = app.services.userService;
 
-        userService.getUserTokenById(login)
+        userService.getUserTokenById(login, password)
             .then((token) => {
                 res.send({auth: true, token: token})
             }).catch(() => {
