@@ -25,14 +25,37 @@ module.exports = function (app) {
         return deferred.promise;
     };
 
-    this.createUser = (req, res) => {
+    this.createUser = (req) => {
+        const deferred = q.defer();
+        const userClient = app.client.userClient;
+
+        let accountType = req.body.accountType;
+        let login = req.body.login;
+        let password = req.body.password;
+        let status = req.body.status;
+
+        userClient.createUser(accountType, login, password, status)
+            .then((user) => {
+                deferred.resolve(user);
+                return user;
+            });
+
+        return deferred.promise;
+    };
+
+    this.updateUser = (req, res) => {
         const deferred = q.defer();
         const tokenService = app.services.tokenService;
         const userClient = app.client.userClient;
 
+        let accountType = req.body.accountType;
+        let login = req.body.login;
+        let password = req.body.password;
+        let status = req.body.status;
+
         tokenService.verifyToken(req, res)
             .then((userId) => {
-                return userClient.getUserById(userId);
+                return userClient.updateUserById(accountType, login, password, status, userId)
             })
             .then((user) => {
                 deferred.resolve(user);

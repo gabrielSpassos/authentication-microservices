@@ -12,11 +12,21 @@ module.exports = function (app) {
             })
     });
 
-    app.post('/users', (req, res) => {
-
+    app.post('/user', (req, res) => {
         const userService = app.services.userService;
 
-        userService.createUser(req, res)
+        userService.createUser(req)
+            .then((user) => {
+                res.send({user: user})
+            }).catch(() => {
+            res.send({auth: false})
+        })
+    });
+
+    app.put('/users', (req, res) => {
+        const userService = app.services.userService;
+
+        userService.updateUser(req, res)
             .then((user) => {
                 res.send({user: user})
             }).catch(() => {
