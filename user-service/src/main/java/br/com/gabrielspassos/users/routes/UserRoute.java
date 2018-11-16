@@ -28,6 +28,7 @@ public class UserRoute extends RouteBuilder {
                 .routeId("updateUser")
                 .process(this::getUserToUpdate)
                 .validate(this::isValidUser)
+                .process(this::updateUserFields)
                 .process(this::saveUser)
                 .end();
 
@@ -64,6 +65,16 @@ public class UserRoute extends RouteBuilder {
     private Boolean isValidUser(Exchange exchange) {
         UserEntity oldUser = exchange.getProperty("oldUser", UserEntity.class);
         return Objects.nonNull(oldUser);
+    }
+
+    private void updateUserFields(Exchange exchange) {
+        UserEntity oldUser = exchange.getProperty("oldUser", UserEntity.class);
+        UserEntity newUser = exchange.getIn().getBody(UserEntity.class);
+        oldUser.setAccountType(newUser.getAccountType());
+        oldUser.setStatus(newUser.getStatus());
+        oldUser.setLogin(newUser.getLogin());
+        oldUser.setPassword(newUser.getPassword());
+        exchange.getIn().setBody(oldUser);
     }
 
     private void getUserById(Exchange exchange) {

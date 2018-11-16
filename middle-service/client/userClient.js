@@ -1,6 +1,6 @@
 const axios = require('axios');
 const q = require('q');
-const userServiceUrl = 'http://localhost:9000/user-service/api/v1/users';
+const userServiceUrl = 'http://10.5.0.3:9000/user-service/api/v1/users';
 
 module.exports = function () {
 

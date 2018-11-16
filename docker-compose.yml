@@ -5,4 +5,38 @@ services:
     image: mongo:latest
     ports:
       - "27017:27017"
+    networks:
+      game-poc:
+        ipv4_address: 10.5.0.2  
+  user-service:
+    container_name: user-service
+    depends_on: 
+      - mongo
+    build:
+      context: ./user-service/
+    ports:
+      - "9000:9000"
+    networks:
+      game-poc:
+        ipv4_address: 10.5.0.3  
+  character-service:
+    container_name: character-service
+    depends_on: 
+      - mongo
+      - user-service
+    build:
+      context: ./character-service/
+    ports:
+      - "9001:9001"
+    networks:
+      game-poc:
+        ipv4_address: 10.5.0.4  
+
+networks:
+  game-poc:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+
   
