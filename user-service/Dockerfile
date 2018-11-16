@@ -1,5 +1,6 @@
 FROM java:8
 WORKDIR /
+COPY . .
 CMD ./gradlew clean build
 COPY ./build/libs/*.jar ./user-service.jar
 CMD java -jar /user-service.jar
