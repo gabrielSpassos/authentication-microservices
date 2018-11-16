@@ -2,6 +2,5 @@ FROM java:8
 WORKDIR /
 COPY . .
 CMD ./gradlew clean build
-COPY ./build/libs/*.jar ./user-service.jar
-CMD java -jar /user-service.jar
+CMD java -jar /build/libs/user-service-0.0.1-SNAPSHOT.jar
 EXPOSE 9000

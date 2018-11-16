@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @RestController
@@ -64,12 +66,14 @@ public class UserController implements BaseVersion {
     }
 
     @GetMapping(value = "/users/login/{login}")
-    public ResponseEntity<?> getUserByLogin(@PathVariable String login) throws Throwable {
+    public ResponseEntity<?> getUserByLogin(@PathVariable String login,
+                                            @RequestHeader(value = "password") String password) throws Throwable {
         try {
             return Stream.of(login)
-                    .map(userLogin -> producerTemplate.requestBody(
+                    .map(userLogin -> producerTemplate.requestBodyAndHeaders(
                             "direct:getUserByLoginAndPassword",
-                            userLogin)
+                            userLogin,
+                            createHeaders(password))
                     ).map(response -> convertToResponseUserDTO((UserEntity) response))
                     .map(ResponseEntity::ok)
                     .findFirst()
@@ -77,6 +81,12 @@ public class UserController implements BaseVersion {
         } catch (CamelExecutionException e) {
             throw ExceptionUtils.getRootCause(e);
         }
+    }
+
+    private Map<String, Object> createHeaders(String password) {
+        Map<String, Object> routeHeaders = new HashMap<>();
+        routeHeaders.put("password", password);
+        return routeHeaders;
     }
 
     private UserEntity convertToEntity(UserDTO userDTO, String id) {

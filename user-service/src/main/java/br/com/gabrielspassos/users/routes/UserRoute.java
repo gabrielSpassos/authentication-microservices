@@ -40,7 +40,7 @@ public class UserRoute extends RouteBuilder {
 
         from("direct:getUserByLoginAndPassword")
                 .routeId("getUserByLoginAndPassword")
-                .process(this::getUserByLogin)
+                .process(this::getUserByLoginAndPassword)
                 .validate(this::isUserPresent)
                 .end();
     }
@@ -83,9 +83,10 @@ public class UserRoute extends RouteBuilder {
         exchange.getIn().setBody(userEntity, UserEntity.class);
     }
 
-    private void getUserByLogin(Exchange exchange) {
+    private void getUserByLoginAndPassword(Exchange exchange) {
         String login = exchange.getIn().getBody(String.class);
-        UserEntity userEntity = userRepository.findByLogin(login);
+        String password = exchange.getIn().getHeader("password", String.class);
+        UserEntity userEntity = userRepository.findByLoginAndPassword(login, password);
         exchange.getIn().setBody(userEntity, UserEntity.class);
     }
 
