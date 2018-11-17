@@ -37,4 +37,11 @@ public class GlobalExceptionHandler {
     public SimpleError handleIllegalArgumentException(IllegalArgumentException e) {
         return new SimpleError(e.getMessage());
     }
+
+    @ExceptionHandler(value = Exception.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public SimpleError handleException(Exception e) {
+        return new SimpleError("Internal Error");
+    }
 }
