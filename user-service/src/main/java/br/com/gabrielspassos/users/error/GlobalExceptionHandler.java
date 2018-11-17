@@ -30,4 +30,11 @@ public class GlobalExceptionHandler {
     public SimpleError handlePredicateValidationException(PredicateValidationException e) {
         return new SimpleError("User inexistent");
     }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public SimpleError handleIllegalArgumentException(IllegalArgumentException e) {
+        return new SimpleError(e.getMessage());
+    }
 }

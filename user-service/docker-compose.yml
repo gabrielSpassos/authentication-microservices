@@ -1,0 +1,7 @@
+version: "3"
+services:
+  mongo-test-user-service:
+    container_name: mongo-test-user-service
+    image: mongo:latest
+    ports:
+      - "3002:27017"

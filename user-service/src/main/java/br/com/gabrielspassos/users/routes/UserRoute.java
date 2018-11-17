@@ -5,6 +5,7 @@ import br.com.gabrielspassos.users.repositories.UserRepository;
 import com.google.common.collect.Lists;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,8 +41,13 @@ public class UserRoute extends RouteBuilder {
 
         from("direct:getUserByLoginAndPassword")
                 .routeId("getUserByLoginAndPassword")
-                .process(this::getUserByLoginAndPassword)
-                .validate(this::isUserPresent)
+                .choice()
+                    .when(this::isPasswordEmpty)
+                        .throwException(new IllegalArgumentException("You must inform the password"))
+                    .otherwise()
+                        .process(this::getUserByLoginAndPassword)
+                        .validate(this::isUserPresent)
+                .endChoice()
                 .end();
     }
 
@@ -81,6 +87,11 @@ public class UserRoute extends RouteBuilder {
         String id = exchange.getIn().getBody(String.class);
         UserEntity userEntity = userRepository.findById(id);
         exchange.getIn().setBody(userEntity, UserEntity.class);
+    }
+
+    private Boolean isPasswordEmpty(Exchange exchange) {
+        String password = exchange.getIn().getHeader("password", String.class);
+        return StringUtils.isBlank(password);
     }
 
     private void getUserByLoginAndPassword(Exchange exchange) {

@@ -4,6 +4,9 @@ public class SimpleError {
 
     private String message;
 
+    public SimpleError() {
+    }
+
     public SimpleError(String message) {
         this.message = message;
     }
