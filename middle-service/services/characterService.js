@@ -10,8 +10,7 @@ module.exports = function (app) {
         return tokenService.verifyToken(req, res)
             .then((userId) => {
                 return characterClient.createCharacter(userId, charClass, charName)
-            })
-            .then((response) => {
+            }).then((response) => {
                 return buildResponse(response.status, response.data);
             }).catch((error) => {
                 throw buildResponse(error.response.status, error.response.data.message)
@@ -28,8 +27,7 @@ module.exports = function (app) {
         return tokenService.verifyToken(req, res)
             .then((userId) => {
                 return characterClient.updateCharacter(userId, charClass, charName)
-            })
-            .then((response) => {
+            }).then((response) => {
                 return buildResponse(response.status, response.data);
             }).catch((error) => {
                 throw buildResponse(error.response.status, error.response.data.message)

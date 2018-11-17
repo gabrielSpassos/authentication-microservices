@@ -1,5 +1,4 @@
 const axios = require('axios');
-const q = require('q');
 const userServiceUrl = 'http://10.5.0.3:9000/user-service/api/v1/users';
 
 module.exports = function () {
@@ -15,9 +14,7 @@ module.exports = function () {
     };
 
     this.createUser = (accountType, login, password, status) => {
-        const deferred = q.defer();
-
-        axios({
+        return axios({
             method:'post',
             url: userServiceUrl,
             data: {
@@ -26,22 +23,11 @@ module.exports = function () {
                 password: password,
                 status: status
             }
-        }).then((response) => {
-            deferred.resolve(response.data);
-            return response.data;
-        }).catch(() => {
-            deferred.reject(() => {
-                return 'Fail';
-            });
         });
-
-        return deferred.promise;
     };
 
     this.updateUserById = (accountType, login, password, status, userId) => {
-        const deferred = q.defer();
-
-        axios({
+        return axios({
             method:'put',
             url: userServiceUrl + '/' + userId,
             data: {
@@ -50,16 +36,7 @@ module.exports = function () {
                 password: password,
                 status: status
             }
-        }).then((response) => {
-            deferred.resolve(response.data);
-            return response.data;
-        }).catch(() => {
-            deferred.reject(() => {
-                return 'Fail';
-            });
         });
-
-        return deferred.promise;
     };
 
     return this;

@@ -22,23 +22,22 @@ module.exports = function (app) {
         const userService = app.services.userService;
 
         userService.createUser(req)
-            .then((user) => {
-                res.send({user: user})
-            }).catch(() => {
-            res.send({auth: false})
-        })
+            .then((response) => {
+                res.status(response.status).send(buildResponseBody(false, response))
+            }).catch((error) => {
+                res.status(error.status).send(buildResponseBody(false, error));
+            });
     });
 
     app.put('/users', (req, res) => {
         const userService = app.services.userService;
 
         userService.updateUser(req, res)
-            .then((user) => {
-                res.send({user: user})
+            .then((response) => {
+                res.status(response.status).send(buildResponseBody(true, response))
             }).catch((error) => {
-                console.log(error);
-                res.send({auth: false, message: 'Error'})
-            })
+                res.status(error.status).send(buildResponseBody(false, error));
+            });
     });
 
     const buildResponseBody = (auth, response) => {
