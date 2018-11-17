@@ -9,22 +9,24 @@ module.exports = function() {
 
         if(!token) {
             deferred.resolve(res);
-            return res.status(401).send({auth: false, message: "Não foi informado token de acesso"});
+            return res.status(401).send(buildResponse(false, 401, 'Not informed user access token'));
         }
 
         jwt.verify(token, process.env.SECRET, (err, decoded) => {
             if(err) {
-                console.log('erro', err);
                 deferred.resolve(res);
-                return res.status(500).send({auth: false, message: "Falha ao autenticar token"})
+                return res.status(500).send(buildResponse(false, 500, 'Authentication failure'));
             }
-            console.log(decoded);
             deferred.resolve(decoded.id);
             return decoded.id;
         });
 
         return deferred.promise;
 
+    };
+
+    const buildResponse = (auth, status, body) =>  {
+        return {auth: auth, response: {status: status, body: body}}
     };
 
     return this;

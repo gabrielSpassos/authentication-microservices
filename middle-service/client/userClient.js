@@ -29,7 +29,7 @@ module.exports = function () {
         const deferred = q.defer();
 
         axios({
-            method:'put',
+            method:'post',
             url: userServiceUrl,
             data: {
                 accountType: accountType,

@@ -5,7 +5,7 @@ module.exports = function (app) {
         let password = req.headers['password'];
 
         if(!password){
-            return res.status(401).send({auth: false, message: "Não foi informado password"});
+            return res.status(401).send({auth: false, message: "Not informed password"});
         }
 
         const userService = app.services.userService;
@@ -18,7 +18,7 @@ module.exports = function (app) {
             })
     });
 
-    app.post('/user', (req, res) => {
+    app.post('/users', (req, res) => {
         const userService = app.services.userService;
 
         userService.createUser(req)
@@ -35,8 +35,9 @@ module.exports = function (app) {
         userService.updateUser(req, res)
             .then((user) => {
                 res.send({user: user})
-            }).catch(() => {
-            res.send({auth: false})
-        })
+            }).catch((error) => {
+                console.log(error);
+                res.send({auth: false, message: 'Error'})
+            })
     });
 };

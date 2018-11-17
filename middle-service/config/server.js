@@ -10,10 +10,9 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 consign()
-    .include('./routes')
-    .then('./client/userClient.js')
-    .then('./services/tokenService.js')
-    .then('./services/userService.js')
+    .include('./routes/')
+    .then('./client/')
+    .then('./services/')
     .into(app);
 
 module.exports = app;
