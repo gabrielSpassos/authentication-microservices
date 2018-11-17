@@ -5,24 +5,13 @@ const userServiceUrl = 'http://10.5.0.3:9000/user-service/api/v1/users';
 module.exports = function () {
 
     this.getUserByLoginAndPassword = (login, password) => {
-        const deferred = q.defer();
-
-        axios({
+        return axios({
             method:'get',
             url: userServiceUrl + '/login/' + login,
             headers: {
                 password: password
             }
-        }).then((response) => {
-            deferred.resolve(response.data);
-            return response.data;
-        }).catch(() => {
-            deferred.reject(() => {
-               return 'Fail';
-            });
         });
-
-        return deferred.promise;
     };
 
     this.createUser = (accountType, login, password, status) => {

@@ -4,25 +4,17 @@ const jwt = require('jsonwebtoken');
 module.exports = function (app) {
 
     this.getUserTokenById = (login, password) => {
-        const deferred = q.defer();
         const userClient = app.client.userClient;
 
-        userClient.getUserByLoginAndPassword(login, password)
+        return userClient.getUserByLoginAndPassword(login, password)
             .then((user) => {
                 let id = user.id;
-                let token = jwt.sign({id}, process.env.SECRET, {
+                return jwt.sign({id}, process.env.SECRET, {
                     expiresIn: 300
                 });
-                deferred.resolve(token);
-                return token;
-            })
-            .catch((error) => {
-                deferred.reject(() => {
-                    return error;
-                });
+            }).catch((error) => {
+                throw buildResponse(error.response.status, error.response.data.message)
             });
-
-        return deferred.promise;
     };
 
     this.createUser = (req) => {
@@ -63,6 +55,10 @@ module.exports = function (app) {
             });
 
         return deferred.promise;
+    };
+
+    const buildResponse = (status, body) =>  {
+        return {status: status, body: body}
     };
 
     return this;
