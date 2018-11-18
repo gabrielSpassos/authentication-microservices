@@ -2,6 +2,7 @@ package br.com.gabrielspassos.users.cucumber.stepdefs;
 
 import br.com.gabrielspassos.users.TestConfig;
 import br.com.gabrielspassos.users.controllers.dto.ResponseUserDTO;
+import br.com.gabrielspassos.users.controllers.dto.UserDTO;
 import br.com.gabrielspassos.users.cucumber.World;
 import br.com.gabrielspassos.users.error.SimpleError;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -52,12 +55,7 @@ public class CreateUserStepdefs extends TestConfig implements En {
                 world.status = HttpStatus.OK.value();
                 world.responseUserDTO = restTemplate.postForEntity(
                         String.format("http://localhost:%s/user-service/api/v1/users", localPort),
-                        createUserDto(
-                                world.map.get("accountType").toString(),
-                                world.map.get("login").toString(),
-                                world.map.get("password").toString(),
-                                world.map.get("status").toString()
-                        ), ResponseUserDTO.class)
+                        buildUserDTO(), ResponseUserDTO.class)
                         .getBody();
             } catch (HttpServerErrorException | HttpClientErrorException e) {
                 world.simpleError = new ObjectMapper().readValue(e.getResponseBodyAsString(), SimpleError.class);
@@ -80,5 +78,25 @@ public class CreateUserStepdefs extends TestConfig implements En {
             assertEquals(expected.getPassword(), world.responseUserDTO.getPassword());
             assertEquals(expected.getStatus(), world.responseUserDTO.getStatus());
         });
+    }
+
+    private UserDTO buildUserDTO() {
+        String status = Optional.ofNullable(world.map.get("status")).isPresent()
+                ? world.map.get("status").toString()
+                : null;
+
+        String password = Optional.ofNullable(world.map.get("password")).isPresent()
+                ? world.map.get("password").toString()
+                : null;
+
+        String login = Optional.ofNullable(world.map.get("login")).isPresent()
+                ? world.map.get("login").toString()
+                : null;
+
+        String accountType = Optional.ofNullable(world.map.get("accountType")).isPresent()
+                ? world.map.get("accountType").toString()
+                : null;
+
+        return createUserDto(accountType, login, password, status);
     }
 }
